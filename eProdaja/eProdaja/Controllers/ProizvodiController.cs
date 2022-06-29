@@ -14,15 +14,15 @@ namespace eProdaja.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Proizvodi> Get()
+        public IEnumerable<Model.Proizvodi> Get()
         {
             return _proizvodiService.Get();
         }
         [HttpGet("{ID}")]
-        public Proizvodi GetById(int ID)
+        public Model.Proizvodi GetById(int ID)
         {
             return _proizvodiService.GetById(ID);
         }
-        
+
     }
 }

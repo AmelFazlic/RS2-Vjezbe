@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace eProdaja.Services
 {
-    public class ProizvodiService : IProizvodiService
+    public class JediniceMjereService : IJedniceMjereService
     {
         public eProdajaContext _context { get; set; }
         public IMapper _mapper { get; set; }
-        public ProizvodiService(IMapper mapper, eProdajaContext context)   
+        public JediniceMjereService(IMapper mapper, eProdajaContext context)   
         {
             _mapper = mapper;
             _context = context;
         }
         //public List<Model.Proizvodi> ProizvodiList = new List<Model.Proizvodi> { new Model.Proizvodi { ProizvodId = 1, Naziv = "Televizor" }, new Model.Proizvodi { ProizvodId = 2, Naziv = "Frizider" } };
-        public IEnumerable<Model.Proizvodi> Get()
+        public IEnumerable<Model.JediniceMjere> Get()
         {
-            var lista = _context.Proizvodis.ToList();
-            return _mapper.Map<List<Model.Proizvodi>>(lista);
+            var lista = _context.JediniceMjeres.ToList();
+            return _mapper.Map<List<Model.JediniceMjere>>(lista);
         }
 
-        public Model.Proizvodi GetById(int ProizvodId)
+        public Model.JediniceMjere GetById(int JedinicaMjereId)
         {
-            Proizvodi proizvodi = _context.Proizvodis.Find(ProizvodId);
-            return _mapper.Map<Model.Proizvodi>(proizvodi);
+            JediniceMjere proizvodi = _context.JediniceMjeres.Find(JedinicaMjereId);
+            return _mapper.Map<Model.JediniceMjere>(proizvodi);
         }
     }
 }

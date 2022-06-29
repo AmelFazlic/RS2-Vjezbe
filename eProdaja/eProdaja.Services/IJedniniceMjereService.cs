@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace eProdaja.Services
 {
-    public  class Proizvodi
+    public interface IJedniceMjereService
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
+        IEnumerable<Model.JediniceMjere> Get();
+        Model.JediniceMjere GetById(int id);
     }
 }
