@@ -21,19 +21,27 @@ namespace eProdaja.Services
             _context = context;
         }
 
-        public T Insert(TInsert obj)
+        public virtual T Insert(TInsert obj)
         {
             var set = _context.Set<TDb>();
             
             TDb newObj = _mapper.Map<TDb>(obj);
 
             set.Add(newObj);
+
+            BeforeInsert(obj, newObj);
+
             _context.SaveChanges();
 
             return _mapper.Map<T>(newObj);
         }
 
-        public T Update(int Id, TUpdate obj)
+        public virtual void BeforeInsert(TInsert insert, TDb context)
+        {
+
+        }
+
+        public virtual T Update(int Id, TUpdate obj)
         {
             var set = _context.Set<TDb>();
 

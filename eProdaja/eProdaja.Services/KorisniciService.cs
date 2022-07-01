@@ -1,27 +1,73 @@
 ﻿using AutoMapper;
+using eProdaja.Model.Request;
+using eProdaja.Model.SearchObjects;
 using eProdaja.Services.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace eProdaja.Services
 {
-    public class KorisniciService : IKorisniciService
+    public class KorisniciService : BaseCRUDService<Model.Korisnici, Database.Korisnici, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
     {
-        public IMapper _mapper { get; set; }
-        public eProdajaContext _context { get; set; }
-        public KorisniciService(eProdajaContext eProdajaContext, IMapper mapper)
+        public KorisniciService(IMapper mapper, eProdajaContext context) : base(mapper, context)
         {
-            _context = eProdajaContext;
-            _mapper = mapper;
         }
-        public IEnumerable<Model.Korisnici> Get()
+
+        public override Model.Korisnici Insert(KorisniciInsertRequest obj)
         {
-            var korisnicis = _context.Korisnicis.ToList();
+            var entity = base.Insert(obj);
+
+            foreach (var UlogaId in obj.UlogeIdList)
+            {
+                Database.KorisniciUloge korisniciUloge = new Database.KorisniciUloge();
+
+                korisniciUloge.KorisnikId = entity.KorisnikId;
+                korisniciUloge.UlogaId = UlogaId;
+                korisniciUloge.DatumIzmjene = DateTime.Now;
+
+                _context.KorisniciUloges.Add(korisniciUloge);
+            }
+
+            return entity;
+        }
+
+        public override void BeforeInsert(KorisniciInsertRequest insert, Korisnici context)
+        {
+            var salt = GenerateSalt();
+            var hash = GenerateHash(salt, insert.Password);
             
-            return _mapper.Map<List<Model.Korisnici>>(korisnicis);
+            context.LozinkaHash = hash;
+            context.LozinkaSalt = salt;
+            
+            base.BeforeInsert(insert, context);
+        }
+
+
+        public static string GenerateSalt()
+        {
+            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+            var byteArray = new byte[16];
+            provider.GetBytes(byteArray);
+
+
+            return Convert.ToBase64String(byteArray);
+        }
+        public static string GenerateHash(string salt, string password)
+        {
+            byte[] src = Convert.FromBase64String(salt);
+            byte[] bytes = Encoding.Unicode.GetBytes(password);
+            byte[] dst = new byte[src.Length + bytes.Length];
+
+            System.Buffer.BlockCopy(src, 0, dst, 0, src.Length);
+            System.Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
+
+            HashAlgorithm algorithm = HashAlgorithm.Create("SHA1");
+            byte[] inArray = algorithm.ComputeHash(dst);
+            return Convert.ToBase64String(inArray);
         }
     }
 }

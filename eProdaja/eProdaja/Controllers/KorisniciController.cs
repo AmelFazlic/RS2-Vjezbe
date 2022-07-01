@@ -1,23 +1,18 @@
-﻿using eProdaja.Services;
-using eProdaja.Services.Database;
+﻿using eProdaja.Model.Request;
+using eProdaja.Model.SearchObjects;
+using eProdaja.Services;
+using eProdaja.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eProdaja.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class KorisniciController : Controller
+    public class KorisniciController : BaseCRUDController<Korisnici, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>
     {
-        private readonly IKorisniciService _service;
-        public KorisniciController(IKorisniciService korisniciService)
+        public KorisniciController(IKorisniciService service) : base(service)
         {
-            _service = korisniciService;
         }
-        [HttpGet]
 
-        public IEnumerable<Model.Korisnici> GetAll()
-        {
-            return _service.Get();
-        }
     }
 }

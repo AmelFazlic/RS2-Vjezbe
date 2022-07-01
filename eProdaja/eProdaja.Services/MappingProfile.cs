@@ -8,16 +8,23 @@ using System.Threading.Tasks;
 
 namespace eProdaja.Services
 {
-    public class MappingProfile : Profile
+    public class MappingProfile : Profile 
     {
         public MappingProfile()
         {
             CreateMap<Database.Korisnici, Model.Korisnici>();
-            CreateMap<Database.Proizvodi, Model.Proizvodi>();
+            CreateMap<KorisniciInsertRequest, Database.Korisnici>();
+            CreateMap<KorisniciUpdateRequest, Database.Korisnici>();
+
             CreateMap<Database.JediniceMjere, Model.JediniceMjere>();
+            CreateMap<JediniceMjereUpsertRequest, Database.JediniceMjere>();
+
+            CreateMap<Database.Proizvodi, Model.Proizvodi>();
             CreateMap<ProizvodiInsertRequest, Database.Proizvodi>();
             CreateMap<ProizvodiUpdateRequest, Database.Proizvodi>();
-            CreateMap<JediniceMjereUpsertRequest, Database.JediniceMjere>();
+
+            CreateMap<Database.VrsteProizvodum, Model.VrsteProizvodum>();
+            CreateMap<VrsteProizvodumUpsertRequest, Database.VrsteProizvodum>();
         }
     }
 }

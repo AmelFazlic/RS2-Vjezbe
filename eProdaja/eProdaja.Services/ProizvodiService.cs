@@ -2,6 +2,7 @@
 using eProdaja.Model.Request;
 using eProdaja.Model.SearchObjects;
 using eProdaja.Services.Database;
+using eProdaja.Services.ProductStateMachine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,45 @@ namespace eProdaja.Services
         : BaseCRUDService<Model.Proizvodi, Proizvodi, ProizvodiSearchObject, ProizvodiInsertRequest, ProizvodiUpdateRequest>, 
         IProizvodiService
     {
-        //public eProdajaContext _context { get; set; }
-        //public IMapper _mapper { get; set; }
+
         public ProizvodiService(IMapper mapper, eProdajaContext context)   
         :base(mapper, context){
-            //_mapper = mapper;
-            //_context = context;
+
         }
-        //public override IEnumerable<Model.Proizvodi> Get (ProizvodiSearchObject search = null)
-        //{
-        //    return base.Get(search);
-        //}
+
+        public override Model.Proizvodi Insert(ProizvodiInsertRequest obj)
+        {
+            var state = BaseState.CreateState("initial");
+            state.Context = _context;
+            return base.Insert(obj);
+        }
+
+        public override Model.Proizvodi Update(int Id, ProizvodiUpdateRequest obj)
+        {
+            var product = _context.Proizvodis.Find(Id);
+
+            var state = BaseState.CreateState(product.StateMachine);
+
+            state.CurrentEntity = product;
+            state.Context = _context;
+            state.Update(obj);
+
+            return GetById(Id);
+        }
+
+        public Model.Proizvodi Activate(int Id)
+        {
+            var product = _context.Proizvodis.Find(Id);
+
+            var state = BaseState.CreateState(product.StateMachine);
+
+            state.CurrentEntity = product;
+            state.Context = _context;
+
+            state.Activate();
+
+            return GetById(Id);
+        }
 
         public override IQueryable<Proizvodi> AddFilter(IQueryable<Proizvodi> query, ProizvodiSearchObject search)
         {
@@ -42,16 +71,5 @@ namespace eProdaja.Services
         }
 
 
-        //public IEnumerable<Model.Proizvodi> Get()
-        //{
-        //    var lista = _context.Proizvodis.ToList();
-        //    return _mapper.Map<List<Model.Proizvodi>>(lista);
-        //}
-
-        //public Model.Proizvodi GetById(int ProizvodId)
-        //{
-        //    Proizvodi proizvodi = _context.Proizvodis.Find(ProizvodId);
-        //    return _mapper.Map<Model.Proizvodi>(proizvodi);
-        //}
     }
 }

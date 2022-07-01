@@ -10,6 +10,6 @@ namespace eProdaja.Services
 {
     public interface IProizvodiService : ICRUDService<Model.Proizvodi, ProizvodiSearchObject, ProizvodiInsertRequest, ProizvodiUpdateRequest>
     {
-   
+        Model.Proizvodi Activate(int Id);
     }
 }
