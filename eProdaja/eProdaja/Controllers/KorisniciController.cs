@@ -8,16 +8,16 @@ namespace eProdaja.Controllers
     [Route("[controller]")]
     public class KorisniciController : Controller
     {
-        private readonly IKorisniciService _korisniciService;
+        private readonly IKorisniciService _service;
         public KorisniciController(IKorisniciService korisniciService)
         {
-            _korisniciService = korisniciService;
+            _service = korisniciService;
         }
         [HttpGet]
 
         public IEnumerable<Model.Korisnici> GetAll()
         {
-            return _korisniciService.Get();
+            return _service.Get();
         }
     }
 }

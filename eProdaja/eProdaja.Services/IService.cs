@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace eProdaja.Services
 {
-    public interface IJedniceMjereService
+    public interface IService <T, TSearch> where T : class where TSearch : class 
     {
-        IEnumerable<Model.JediniceMjere> Get();
-        Model.JediniceMjere GetById(int id);
+        IEnumerable<T> Get(TSearch search = null);
+        T GetById(int id);
     }
 }
