@@ -1,5 +1,7 @@
-﻿using eProdaja.Model.Request;
+﻿using AutoMapper;
+using eProdaja.Model.Request;
 using eProdaja.Services.Database;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +10,22 @@ using System.Threading.Tasks;
 
 namespace eProdaja.Services.ProductStateMachine
 {
-    public abstract class BaseState
+    public class BaseState
     {
         public Database.Proizvodi CurrentEntity { get; set; }
-        public int CurrentState { get; set; }
-        public eProdajaContext Context { get; set; }
+        public string CurrentState { get; set; }
+        public eProdajaContext _context { get; set; }
 
-        public virtual void Insert(ProizvodiInsertRequest request)
+        public IMapper _mapper { get; set; }
+        public IServiceProvider _serviceProvider { get; set; }
+        public BaseState(IMapper mapper, IServiceProvider serviceProvider, eProdajaContext context)
+        {
+            _mapper = mapper;
+            _serviceProvider = serviceProvider;
+            _context = context;
+        }
+
+        public virtual Model.Proizvodi Insert(ProizvodiInsertRequest request)
         {
             throw new Exception("Not allowed");
         }
@@ -34,23 +45,27 @@ namespace eProdaja.Services.ProductStateMachine
         {
             throw new Exception("Not allowed");
         }
-        public static BaseState CreateState(string stateName)
+        public BaseState CreateState(string stateName)
         {
             switch (stateName)
             {
                 case "initial":
-                    return new InitialProductState();
+                    return _serviceProvider.GetService<InitialProductState>();
                     break;
                 case "draft":
-                    return new DraftProductState();
+                    return _serviceProvider.GetService<DraftProductState>();
                     break;
                 case "active":
-                    return new ActiveProductState();
+                    return _serviceProvider.GetService<ActiveProductState>();
                     break;
                 default:
                     throw new Exception("Not supported");
                     break;
             }
+        }
+        public virtual List<string> AllowedActions()
+        {
+            return new List<string>();
         }
     }
 }

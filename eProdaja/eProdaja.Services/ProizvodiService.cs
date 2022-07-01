@@ -15,27 +15,27 @@ namespace eProdaja.Services
         : BaseCRUDService<Model.Proizvodi, Proizvodi, ProizvodiSearchObject, ProizvodiInsertRequest, ProizvodiUpdateRequest>, 
         IProizvodiService
     {
-
-        public ProizvodiService(IMapper mapper, eProdajaContext context)   
+        public BaseState _baseState { get; set; }
+        public ProizvodiService(IMapper mapper, eProdajaContext context, BaseState baseState)   
         :base(mapper, context){
-
+            _baseState = baseState;
         }
 
         public override Model.Proizvodi Insert(ProizvodiInsertRequest obj)
         {
-            var state = BaseState.CreateState("initial");
-            state.Context = _context;
-            return base.Insert(obj);
+            var state = _baseState.CreateState("initial");
+
+            return state.Insert(obj);
         }
 
         public override Model.Proizvodi Update(int Id, ProizvodiUpdateRequest obj)
         {
             var product = _context.Proizvodis.Find(Id);
 
-            var state = BaseState.CreateState(product.StateMachine);
+            var state = _baseState.CreateState(product.StateMachine);
 
             state.CurrentEntity = product;
-            state.Context = _context;
+
             state.Update(obj);
 
             return GetById(Id);
@@ -45,16 +45,35 @@ namespace eProdaja.Services
         {
             var product = _context.Proizvodis.Find(Id);
 
-            var state = BaseState.CreateState(product.StateMachine);
+            var state = _baseState.CreateState(product.StateMachine);
 
             state.CurrentEntity = product;
-            state.Context = _context;
 
             state.Activate();
 
             return GetById(Id);
         }
 
+        public Model.Proizvodi Hide(int Id)
+        {
+            var product = _context.Proizvodis.Find(Id);
+
+            var state = _baseState.CreateState(product.StateMachine);
+
+            state.CurrentEntity = product;
+
+            state.Hide();
+            
+            return GetById(Id);
+        }
+        public List<string> AllowedActions(int Id)
+        {
+            var product = GetById(Id);
+
+            var state = _baseState.CreateState(product.StateMachine);
+
+            return state.AllowedActions();
+        }
         public override IQueryable<Proizvodi> AddFilter(IQueryable<Proizvodi> query, ProizvodiSearchObject search)
         {
             var filterQuery = base.AddFilter(query, search);

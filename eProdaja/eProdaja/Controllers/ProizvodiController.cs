@@ -9,22 +9,30 @@ namespace eProdaja.Controllers
     [Route("[controller]")]
     public class ProizvodiController : BaseCRUDController<Model.Proizvodi, ProizvodiSearchObject, ProizvodiInsertRequest, ProizvodiUpdateRequest>
     {
-        //private readonly IService<Model.Proizvodi> _service;
+        public IProizvodiService _service { get; set; }
         public ProizvodiController(IProizvodiService service)
-        : base(service){
-            //_service = service;
+        : base(service)
+        {
+            _service = service;
         }
-
-        //[HttpGet]
-        //public IEnumerable<Model.Proizvodi> Get()
-        //{
-        //    return _service.Get();
-        //}
-        //[HttpGet("{ID}")]
-        //public Model.Proizvodi GetById(int ID)
-        //{
-        //    return _service.GetById(ID);
-        //}
+        [HttpPut("{Id}/Activate")]
+        public Model.Proizvodi Activate(int Id)
+        {
+            var result = _service.Activate(Id);
+            return result;
+        }
+        [HttpPut("{Id}/Hide")]
+        public Model.Proizvodi Hide(int Id)
+        {
+            var result = _service.Hide(Id);
+            return result;
+        }
+        [HttpPut("{Id}/AllowedActions")]
+        public List<string> AllowedActions(int Id)
+        {
+            var result = _service.AllowedActions(Id);
+            return result;
+        }
 
     }
 }
