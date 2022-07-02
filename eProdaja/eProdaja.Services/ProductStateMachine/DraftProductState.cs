@@ -19,10 +19,10 @@ namespace eProdaja.Services.ProductStateMachine
         {
             var set = _context.Set<Database.Proizvodi>();
 
-            _mapper.Map(request, set);
+            _mapper.Map(request, CurrentEntity);
+            CurrentEntity.StateMachine = "draft";
 
             _context.SaveChanges();
-            CurrentEntity.StateMachine = "draft";
         }
         public override void Activate()
         {
