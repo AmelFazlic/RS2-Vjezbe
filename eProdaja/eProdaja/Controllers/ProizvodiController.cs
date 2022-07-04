@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eProdaja.Controllers
 {
-    [ApiController] 
-    [Route("[controller]")]
+
     public class ProizvodiController : BaseCRUDController<Model.Proizvodi, ProizvodiSearchObject, ProizvodiInsertRequest, ProizvodiUpdateRequest>
     {
         public IProizvodiService _service { get; set; }
