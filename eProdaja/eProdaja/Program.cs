@@ -1,15 +1,20 @@
 using eProdaja.Services;
+using eProdaja.Model.SearchObjects;
 using eProdaja.Services.Database;
 using eProdaja.Services.ProductStateMachine;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using eProdaja.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container. 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(x => 
+{
+    x.Filters.Add<ErrorFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c=>
@@ -38,6 +43,7 @@ builder.Services.AddTransient<IVrsteProizvodumService, VrsteProizvodumService>()
 //builder.Services.AddTransient<IService<eProdaja.Model.JediniceMjere>, BaseService<eProdaja.Model.JediniceMjere,JediniceMjere>>();
 //builder.Services.AddTransient<IService<eProdaja.Model.Proizvodi>, BaseService<eProdaja.Model.Proizvodi, Proizvodi>>();
 
+builder.Services.AddTransient<IService<eProdaja.Model.Uloge, BaseSearchObject>, BaseService<eProdaja.Model.Uloge, Uloge, BaseSearchObject>>();
 
 builder.Services.AddTransient<BaseState>();
 builder.Services.AddTransient<DraftProductState>();

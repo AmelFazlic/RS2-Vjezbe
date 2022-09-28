@@ -30,6 +30,10 @@
         {
             this.btnShow = new System.Windows.Forms.Button();
             this.dgvKorisnici = new System.Windows.Forms.DataGridView();
+            this.Ime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Prezime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RoleNames = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -50,11 +54,42 @@
             // dgvKorisnici
             // 
             this.dgvKorisnici.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvKorisnici.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Ime,
+            this.Prezime,
+            this.RoleNames,
+            this.Status});
             this.dgvKorisnici.Location = new System.Drawing.Point(24, 88);
             this.dgvKorisnici.Name = "dgvKorisnici";
             this.dgvKorisnici.RowTemplate.Height = 25;
+            this.dgvKorisnici.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvKorisnici.Size = new System.Drawing.Size(753, 339);
             this.dgvKorisnici.TabIndex = 1;
+            this.dgvKorisnici.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvKorisnici_CellContentDoubleClick);
+            // 
+            // Ime
+            // 
+            this.Ime.DataPropertyName = "Ime";
+            this.Ime.HeaderText = "Ime";
+            this.Ime.Name = "Ime";
+            // 
+            // Prezime
+            // 
+            this.Prezime.DataPropertyName = "Prezime";
+            this.Prezime.HeaderText = "Prezime";
+            this.Prezime.Name = "Prezime";
+            // 
+            // RoleNames
+            // 
+            this.RoleNames.DataPropertyName = "RoleNames";
+            this.RoleNames.HeaderText = "Uloge";
+            this.RoleNames.Name = "RoleNames";
+            // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "Status";
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
             // 
             // txtUsername
             // 
@@ -101,6 +136,7 @@
             this.Controls.Add(this.btnShow);
             this.Name = "frmKorisnici";
             this.Text = "frmKorisnici";
+            this.Load += new System.EventHandler(this.frmKorisnici_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvKorisnici)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -115,5 +151,9 @@
         private Label label1;
         private Label label2;
         private TextBox txtName;
+        private DataGridViewTextBoxColumn Ime;
+        private DataGridViewTextBoxColumn Prezime;
+        private DataGridViewTextBoxColumn RoleNames;
+        private DataGridViewCheckBoxColumn Status;
     }
 }

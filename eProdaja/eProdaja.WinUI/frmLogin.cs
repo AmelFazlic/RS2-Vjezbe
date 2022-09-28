@@ -26,7 +26,7 @@ namespace eProdaja.WinUI
             {
                 var result = await _service.Get<dynamic>();
 
-                frmKorisnici frm = new frmKorisnici();
+                mdiMain frm = new mdiMain();
                 frm.Show();
             }
             catch (Exception ex)

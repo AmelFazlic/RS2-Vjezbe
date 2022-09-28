@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using eProdaja.Services.Database;
+using eProdaja.Model;
 using eProdaja.Model.Request;
 using eProdaja.Model.SearchObjects;
-using eProdaja.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,11 @@ namespace eProdaja.Services
 
         public override Model.Korisnici Insert(KorisniciInsertRequest obj)
         {
+            if(obj.Password != obj.PasswordPotvrda)
+            {
+                throw new UserException("Password and Conformation are not the same");
+            }
+
             var entity = base.Insert(obj);
 
             foreach (var UlogaId in obj.UlogeIdList)
@@ -36,7 +42,7 @@ namespace eProdaja.Services
             return entity;
         }
 
-        public override IQueryable<Korisnici> AddFilter(IQueryable<Korisnici> query, KorisniciSearchObject search)
+        public override IQueryable<eProdaja.Services.Database.Korisnici> AddFilter(IQueryable<eProdaja.Services.Database.Korisnici> query, KorisniciSearchObject search)
         {
             var filterQuery = base.AddFilter(query, search);
             
@@ -53,7 +59,7 @@ namespace eProdaja.Services
             return filterQuery;
         }
 
-        public override void BeforeInsert(KorisniciInsertRequest insert, Korisnici context)
+        public override void BeforeInsert(KorisniciInsertRequest insert, eProdaja.Services.Database.Korisnici context)
         {
             var salt = GenerateSalt();
             var hash = GenerateHash(salt, insert.Password);
@@ -87,7 +93,16 @@ namespace eProdaja.Services
             byte[] inArray = algorithm.ComputeHash(dst);
             return Convert.ToBase64String(inArray);
         }
-
+        
+        public override IQueryable<eProdaja.Services.Database.Korisnici> AddInclude(IQueryable<eProdaja.Services.Database.Korisnici> query, KorisniciSearchObject search = null)
+        {
+            if (search?.IncludeRoles == true)
+            {
+                query = query.Include("KorisniciUloges.Uloga"); 
+            }
+            return query;
+        }
+        
         public Model.Korisnici Login(string username, string password)
         {
             var entity = _context.Korisnicis.Include("KorisniciUloges.Uloga").FirstOrDefault(x => x.KorisnickoIme == username);

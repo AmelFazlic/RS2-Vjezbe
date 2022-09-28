@@ -22,9 +22,10 @@ namespace eProdaja.Services
         //public List<Model.Proizvodi> ProizvodiList = new List<Model.Proizvodi> { new Model.Proizvodi { ProizvodId = 1, Naziv = "Televizor" }, new Model.Proizvodi { ProizvodId = 2, Naziv = "Frizider" } };
         public virtual IEnumerable<T> Get(TSearch search = null)
         {
-            var lista = _context.Set<TDb>().ToList().AsQueryable();
+            var lista = _context.Set<TDb>().AsQueryable();
 
             lista = AddFilter(lista, search);
+            lista = AddInclude(lista, search);
 
             if (search.Page.HasValue == true)
             {
@@ -34,7 +35,11 @@ namespace eProdaja.Services
             return _mapper.Map<IList<T>>(lista);
         }
 
-        public virtual IQueryable<TDb> AddFilter(IQueryable<TDb> query, TSearch search)
+        public virtual IQueryable<TDb> AddInclude(IQueryable<TDb> query, TSearch search = null)
+        {
+            return query;
+        }
+        public virtual IQueryable<TDb> AddFilter(IQueryable<TDb> query, TSearch search = null)
         {
             return query;
         }

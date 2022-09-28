@@ -13,13 +13,13 @@ namespace eProdaja.Controllers
         {
         }
 
-        [Authorize("Administrator")]
+        [Authorize(Roles = "Administrator")]
         public override Korisnici Insert([FromBody] KorisniciInsertRequest insert)
         {
             return base.Insert(insert);
         }
 
-        [Authorize("Administrator")]
+        [Authorize(Roles = "Administrator")]
         public override Korisnici Update(int Id, [FromBody] KorisniciUpdateRequest update)
         {
             return base.Update(Id, update);
